@@ -1,24 +1,22 @@
 package org.vaadin.easybinder.usagetest.com.vaadin.data;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.binder.BeanValidationBinder;
+import com.vaadin.flow.data.binder.Binder;
+import org.hibernate.validator.group.GroupSequenceProvider;
+import org.hibernate.validator.spi.group.DefaultGroupSequenceProvider;
+import org.junit.Test;
 
 import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.hibernate.validator.group.GroupSequenceProvider;
-import org.hibernate.validator.spi.group.DefaultGroupSequenceProvider;
-import org.junit.Test;
-
-import com.vaadin.data.BeanValidationBinder;
-import com.vaadin.data.Binder;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.TextField;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class BeanValidationBinderGroupingTest {
 
@@ -71,7 +69,7 @@ public class BeanValidationBinderGroupingTest {
 	public void testBeanClassLevelValidation() {
 		TextField field1 = new TextField();
 		TextField field2 = new TextField();
-		Label statusLabel = new Label();
+		Span statusLabel = new Span();
 
 		Binder<MyEntity> binder = new BeanValidationBinder<>(MyEntity.class);
 		binder.forField(field1).withNullRepresentation("").bind("s1");

@@ -2,19 +2,18 @@ package org.vaadin.easybinder.example;
 
 import java.util.EnumSet;
 
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.datepicker.DatePicker;
+import com.vaadin.flow.component.datetimepicker.DateTimePicker;
+import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
+import com.vaadin.flow.component.textfield.TextField;
 import org.vaadin.addonhelpers.AbstractTest;
 import org.vaadin.easybinder.data.ReflectionBinder;
 import org.vaadin.easybinder.testentity.Flight;
 import org.vaadin.easybinder.testentity.FlightId.LegType;
-
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.DateField;
-import com.vaadin.ui.DateTimeField;
-import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.RadioButtonGroup;
-import com.vaadin.ui.TextField;
 
 @SuppressWarnings("serial")
 public class ManualReflectionBindingExample extends AbstractTest {
@@ -22,13 +21,13 @@ public class ManualReflectionBindingExample extends AbstractTest {
 	TextField airline = new TextField("Airline");
 	TextField flightNumber = new TextField("Flight number");
 	TextField flightSuffix = new TextField("Flight suffix");
-	DateField date = new DateField("Date");
+	DatePicker date = new DatePicker("Date");
 	RadioButtonGroup<LegType> legType = new RadioButtonGroup<>("Leg type", EnumSet.allOf(LegType.class));
-	DateTimeField sbt = new DateTimeField("SBT");
-	DateTimeField ebt = new DateTimeField("EBT");
-	DateTimeField abt = new DateTimeField("ABT");
+	DateTimePicker sbt = new DateTimePicker("SBT");
+	DateTimePicker ebt = new DateTimePicker("EBT");
+	DateTimePicker abt = new DateTimePicker("ABT");
 	TextField gate = new TextField("Gate");
-	CheckBox canceled = new CheckBox("Canceled");	
+	Checkbox canceled = new Checkbox("Canceled");
 
 	@Override
 	public Component getTestComponent() {
@@ -46,11 +45,11 @@ public class ManualReflectionBindingExample extends AbstractTest {
 
 		FormLayout f = new FormLayout();
 
-		f.addComponents(airline, flightNumber, flightSuffix, date, legType, sbt, ebt, abt, gate, canceled);
+		f.add(airline, flightNumber, flightSuffix, date, legType, sbt, ebt, abt, gate, canceled);
 
-		Label statusLabel = new Label();
+		Span statusLabel = new Span();
 		binder.setStatusLabel(statusLabel);		
-		f.addComponents(statusLabel);	
+		f.add(statusLabel);
 				
 		binder.setBean(new Flight());
 

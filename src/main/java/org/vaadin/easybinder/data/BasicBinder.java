@@ -244,6 +244,20 @@ public class BasicBinder<BEAN> {
     }
 
     /**
+     * Adds a listener to the binder.
+     *
+     * @param eventType the type of the event
+     * @param method    the consumer method of the listener
+     * @param <T>       the event type
+     * @return a registration for the listener
+     */
+    private <T> Registration addListener(Class<?> eventType, SerializableConsumer<T> method) {
+            List<SerializableConsumer<?>> list = listeners
+                    .computeIfAbsent(eventType, key -> new ArrayList<>());
+            return Registration.addAndRemove(list, method);
+    }
+
+    /**
      * Adds status change listener to the binder.
      * <p>
      * The {@link Binder} status is changed whenever any of the following happens:
@@ -261,21 +275,6 @@ public class BasicBinder<BEAN> {
      */
     public Registration addStatusChangeListener(BinderStatusChangeListener listener) {
         return addListener(BinderStatusChangeEvent.class, listener::statusChange);
-    }
-
-    /**
-     * Adds a listener to the binder.
-     *
-     * @param eventType the type of the event
-     * @param method    the consumer method of the listener
-     * @param <T>       the event type
-     * @return a registration for the listener
-     */
-    protected <T> Registration addListener(Class<?> eventType,
-                                           SerializableConsumer<T> method) {
-        List<SerializableConsumer<?>> list = listeners
-                .computeIfAbsent(eventType, key -> new ArrayList<>());
-        return Registration.addAndRemove(list, method);
     }
 
     public boolean getHasChanges() {
@@ -381,7 +380,7 @@ public class BasicBinder<BEAN> {
      * <p>
      * Passes all field related results to the Binding status handlers. All
      * other status changes are displayed in the status label, if one has been
-     * set with {@link #setStatusLabel(Span)}.
+     * set with {@link #setStatusLabel(Label)}.
      *
      * @param binderStatus status of validation results from binding and/or bean level
      *                     validators
@@ -402,4 +401,242 @@ public class BasicBinder<BEAN> {
         return status;
     }
 
+    public static class EasyBinding<BEAN, FIELDVALUE, TARGET> implements Binder.Binding<BEAN, TARGET> {
+        protected final HasValue<?, FIELDVALUE> field;
+        protected final ValueProvider<BEAN, TARGET> getter;
+        protected final Setter<BEAN, TARGET> setter;
+        protected final String property;
+
+        protected final Converter<FIELDVALUE, TARGET> converterValidatorChain;
+        protected Registration registration;
+
+        protected String conversionError = null;
+        protected String validationError = null;
+
+        protected BindingValidationStatusHandler statusHandler = s -> {
+            HasValue<?, ?> field = s.getField();
+            if (s.getMessage().isPresent()) {
+                if (field instanceof Component) {
+                    ComponentUtil.setData((Component) field, "error", s.getMessage().get());
+                    ;
+                }
+            } else {
+                if (field instanceof Component) {
+                    ComponentUtil.setData((Component) field, "error", null);
+                }
+            }
+        };
+        private boolean asRequiredSet;
+        private boolean validatorsDisabled;
+        private boolean convertBackToPresentation = true;
+
+        public EasyBinding(BasicBinder<BEAN> binder, HasValue<?, FIELDVALUE> field, ValueProvider<BEAN, TARGET> getter,
+                           Setter<BEAN, TARGET> setter, String property,
+                           Converter<FIELDVALUE, TARGET> converterValidatorChain) {
+            this.field = field;
+            this.getter = getter;
+            this.setter = setter;
+            this.property = property;
+            this.converterValidatorChain = converterValidatorChain;
+
+            registration = field.addValueChangeListener(e -> {
+                if (binder.getBean() != null) {
+                    if (binder.fieldToBean(this)) {
+                        binder.fireValueChangeEvent(e);
+                    }
+                }
+            });
+
+            if (setter == null) {
+                field.setReadOnly(true);
+            }
+        }
+
+        public void beanToField(BEAN bean) {
+            field.setValue(converterValidatorChain.convertToPresentation(getter.apply(bean), createValueContext()));
+        }
+
+        @Override
+        public HasValue<?, FIELDVALUE> getField() {
+            return field;
+        }
+
+        /**
+         * Creates a value context from the current state of the binding and its field.
+         *
+         * @return the value context
+         */
+        protected ValueContext createValueContext() {
+            if (field instanceof Component) {
+                return new ValueContext((Component) field, field);
+            }
+            return new ValueContext(null, field, findLocale());
+        }
+
+        /**
+         * Finds an appropriate locale to be used in conversion and validation.
+         *
+         * @return the found locale, not null
+         */
+        protected Locale findLocale() {
+            Locale l = null;
+            if (field instanceof Component && ((Component) field).getUI().isPresent()) {
+                l = ((Component) field).getUI().get().getLocale();
+            }
+            if (l == null && UI.getCurrent() != null) {
+                l = UI.getCurrent().getLocale();
+            }
+            if (l == null) {
+                l = Locale.getDefault();
+            }
+            return l;
+        }
+
+        public Optional<String> getProperty() {
+            return Optional.ofNullable(property);
+        }
+
+        public boolean hasValidationError() {
+            return validationError != null;
+        }
+
+        public boolean hasConversionError() {
+            return conversionError != null;
+        }
+
+        public boolean hasError() {
+            return hasValidationError() || hasConversionError();
+        }
+
+        @Override
+        public BindingValidationStatus<TARGET> validate() {
+            return validate(true);
+        }
+
+        protected void setConversionError(String errorMessage) {
+            Objects.requireNonNull(errorMessage);
+            conversionError = errorMessage;
+        }
+
+        protected void clearConversionError() {
+            conversionError = null;
+        }
+
+        public void clearValidationError() {
+            validationError = null;
+        }
+
+        public Optional<String> getValidationError() {
+            return Optional.ofNullable(validationError);
+        }
+
+        public void setValidationError(String errorMessage) {
+            Objects.requireNonNull(errorMessage);
+            validationError = errorMessage;
+        }
+
+        public Optional<String> getError() {
+            if (conversionError != null) {
+                return Optional.of(conversionError);
+            } else {
+                return Optional.ofNullable(validationError);
+            }
+        }
+
+        // Since 8.4
+        //@Override
+        public ValueProvider<BEAN, TARGET> getGetter() {
+            return getter;
+        }
+
+        // Since 8.2
+        //@Override
+        //@SuppressWarnings("deprecation")
+        public BindingValidationStatus<TARGET> validate(boolean fireEvent) {
+            Result<TARGET> result = hasError() ? Result.error("") : Result.ok(null);
+            BindingValidationStatus<TARGET> status = new BindingValidationStatus<>(result, this);
+
+            if (fireEvent) {
+                getValidationStatusHandler().statusChange(status);
+            }
+
+            return status;
+        }
+
+        // Since 8.2
+        //@Override
+        public BindingValidationStatusHandler getValidationStatusHandler() {
+            return statusHandler;
+        }
+
+        // Since 8.2
+        //@Override
+        public void unbind() {
+            registration.remove();
+        }
+
+        // Since 8.2
+        //@Override
+        public void read(BEAN bean) {
+            if (setter == null || field.isReadOnly()) {
+                return;
+            }
+            Result<TARGET> result = converterValidatorChain.convertToModel(field.getValue(), createValueContext());
+            result.ifError(e -> setConversionError(e));
+            result.ifOk(e -> {
+                clearConversionError();
+                setter.accept(bean, e);
+            });
+        }
+
+        // Since 8.4
+        //@Override
+        public Setter<BEAN, TARGET> getSetter() {
+            return setter;
+        }
+
+        @Override
+        public boolean isAsRequiredEnabled() {
+            return field.isRequiredIndicatorVisible();
+        }
+
+        @Override
+        public void setAsRequiredEnabled(boolean asRequiredEnabled) {
+            if (asRequiredEnabled != isAsRequiredEnabled()) {
+                field.setRequiredIndicatorVisible(asRequiredEnabled);
+                validate();
+            }
+        }
+
+        @Override
+        public boolean isValidatorsDisabled() {
+            return validatorsDisabled;
+        }
+
+        @Override
+        public void setValidatorsDisabled(boolean validatorsDisabled) {
+            this.validatorsDisabled = validatorsDisabled;
+        }
+
+        @Override
+        public boolean isConvertBackToPresentation() {
+            return convertBackToPresentation;
+        }
+
+        @Override
+        public void setConvertBackToPresentation(boolean convertBackToPresentation) {
+            this.convertBackToPresentation = convertBackToPresentation;
+        }
+
+        // Since 8.4
+        //@Override
+        public boolean isReadOnly() {
+            return (setter == null || field.isReadOnly());
+        }
+
+        public void setReadOnly(boolean readOnly) {
+            field.setReadOnly(setter == null || readOnly);
+        }
+
+    }
 }

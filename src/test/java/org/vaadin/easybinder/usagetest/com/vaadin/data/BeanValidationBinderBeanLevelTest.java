@@ -1,27 +1,19 @@
 package org.vaadin.easybinder.usagetest.com.vaadin.data;
 
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.binder.BeanValidationBinder;
+import com.vaadin.flow.data.binder.Binder;
+import org.junit.Test;
+
+import javax.validation.*;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-
-import javax.validation.Constraint;
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
-import javax.validation.Payload;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
-
-import org.junit.Test;
-
-import com.vaadin.data.BeanValidationBinder;
-import com.vaadin.data.Binder;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.TextField;
 
 public class BeanValidationBinderBeanLevelTest {
 
@@ -78,7 +70,7 @@ public class BeanValidationBinderBeanLevelTest {
 	public void testBeanClassLevelValidation() {
 		TextField field1 = new TextField();
 		TextField field2 = new TextField();
-		Label statusLabel = new Label();
+		Span statusLabel = new Span();
 
 		Binder<MyEntity> binder = new BeanValidationBinder<>(MyEntity.class);
 		binder.forField(field1).withNullRepresentation("").bind("s1");

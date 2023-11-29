@@ -11,6 +11,7 @@ import com.vaadin.flow.data.binder.*;
 import com.vaadin.flow.function.SerializablePredicate;
 import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.shared.Registration;
+import org.vaadin.easybinder.data.BasicBinder.EasyBinding;
 
 
 @SuppressWarnings("serial")

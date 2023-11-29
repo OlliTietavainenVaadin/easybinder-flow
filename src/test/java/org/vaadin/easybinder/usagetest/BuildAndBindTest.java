@@ -1,19 +1,19 @@
 package org.vaadin.easybinder.usagetest;
 
-import java.util.stream.Stream;
-
+import com.vaadin.flow.component.HasText;
+import com.vaadin.flow.component.HasValue;
+import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.datepicker.DatePicker;
+import com.vaadin.flow.component.datetimepicker.DateTimePicker;
+import com.vaadin.flow.component.textfield.TextField;
 import org.junit.BeforeClass;
 import org.vaadin.easybinder.data.AutoBinder;
 import org.vaadin.easybinder.testentity.Flight;
 import org.vaadin.easybinder.testentity.FlightId.LegType;
 
-import com.vaadin.data.HasValue;
-import com.vaadin.ui.AbstractSingleSelect;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.DateField;
-import com.vaadin.ui.DateTimeField;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.TextField;
+import java.util.stream.Stream;
+
 
 public class BuildAndBindTest extends BaseTests {
 
@@ -27,13 +27,13 @@ public class BuildAndBindTest extends BaseTests {
 		form.airline = (TextField) binder.getFieldForProperty("flightId.airline").get();
 		form.flightNumber = (TextField) binder.getFieldForProperty("flightId.flightNumber").get();
 		form.flightSuffix = (TextField) binder.getFieldForProperty("flightId.flightSuffix").get();
-		form.date = (DateField) binder.getFieldForProperty("flightId.date").get();
-		form.legType = (AbstractSingleSelect<LegType>) binder.getFieldForProperty("flightId.legType").get();
-		form.sbt = (DateTimeField) binder.getFieldForProperty("sbt").get();
-		form.ebt = (DateTimeField) binder.getFieldForProperty("ebt").get();
-		form.abt = (DateTimeField) binder.getFieldForProperty("abt").get();
+		form.date = (DatePicker) binder.getFieldForProperty("flightId.date").get();
+		form.legType = (ComboBox<LegType>) binder.getFieldForProperty("flightId.legType").get();
+		form.sbt = (DateTimePicker) binder.getFieldForProperty("sbt").get();
+		form.ebt = (DateTimePicker) binder.getFieldForProperty("ebt").get();
+		form.abt = (DateTimePicker) binder.getFieldForProperty("abt").get();
 		form.gate = (TextField) binder.getFieldForProperty("gate").get();
-		form.canceled = (CheckBox) binder.getFieldForProperty("canceled").get();
+		form.canceled = (Checkbox) binder.getFieldForProperty("canceled").get();
 	}
 
 	@Override
@@ -42,7 +42,7 @@ public class BuildAndBindTest extends BaseTests {
 	}
 
 	@Override
-	protected Stream<HasValue<?>> getFields() {
+	protected Stream<HasValue<?, ?>> getFields() {
 		return binder.getFields();
 	}
 
@@ -52,7 +52,7 @@ public class BuildAndBindTest extends BaseTests {
 	}
 	
 	@Override
-	protected void setStatusLabel(Label label) {
+	protected void setStatusLabel(HasText label) {
 		binder.setStatusLabel(label);
 	}	
 }

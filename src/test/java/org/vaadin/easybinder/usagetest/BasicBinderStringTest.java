@@ -1,16 +1,13 @@
 package org.vaadin.easybinder.usagetest;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
-import javax.validation.constraints.Size;
-
+import com.vaadin.flow.component.textfield.TextField;
 import org.junit.Test;
 import org.vaadin.easybinder.data.BasicBinder;
 
-import com.vaadin.ui.TextField;
+import javax.validation.constraints.Size;
+
+import static org.junit.Assert.*;
+
 
 public class BasicBinderStringTest {
 	public static class MyEntity {

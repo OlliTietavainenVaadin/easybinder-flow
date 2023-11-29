@@ -1,27 +1,21 @@
 package org.vaadin.easybinder.usagetest;
 
-import static info.solidsoft.mockito.java8.AssertionMatcher.assertArg;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.atLeast;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.validation.constraints.NotNull;
-
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.textfield.TextField;
 import org.hibernate.validator.group.GroupSequenceProvider;
 import org.hibernate.validator.spi.group.DefaultGroupSequenceProvider;
 import org.junit.Test;
 import org.vaadin.easybinder.data.BasicBinder;
 import org.vaadin.easybinder.data.BinderStatusChangeListener;
 
-import com.vaadin.ui.Label;
-import com.vaadin.ui.TextField;
+import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
+
+import static info.solidsoft.mockito.java8.AssertionMatcher.assertArg;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.*;
 
 public class BasicBinderGroupingTest {
 	public static interface MyGroup {
@@ -83,7 +77,7 @@ public class BasicBinderGroupingTest {
 	public void testGroupValidationGroupProvider() {
 		TextField field1 = new TextField();
 		TextField field2 = new TextField();
-		Label statusLabel = new Label();
+		Span statusLabel = new Span();
 
 		BasicBinder<MyEntity> binder = new BasicBinder<>();
 

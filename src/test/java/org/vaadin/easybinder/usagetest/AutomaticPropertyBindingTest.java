@@ -1,13 +1,12 @@
 package org.vaadin.easybinder.usagetest;
 
-import java.util.stream.Stream;
-
+import com.vaadin.flow.component.HasText;
+import com.vaadin.flow.component.HasValue;
 import org.junit.BeforeClass;
 import org.vaadin.easybinder.data.AutoBinder;
 import org.vaadin.easybinder.testentity.Flight;
 
-import com.vaadin.data.HasValue;
-import com.vaadin.ui.Label;
+import java.util.stream.Stream;
 
 public class AutomaticPropertyBindingTest extends BaseTests {
 
@@ -24,7 +23,7 @@ public class AutomaticPropertyBindingTest extends BaseTests {
 	}
 
 	@Override
-	protected Stream<HasValue<?>> getFields() {
+	protected Stream<HasValue<?, ?>> getFields() {
 		return binder.getFields();
 	}
 
@@ -34,7 +33,7 @@ public class AutomaticPropertyBindingTest extends BaseTests {
 	}
 
 	@Override
-	protected void setStatusLabel(Label label) {
+	protected void setStatusLabel(HasText label) {
 		binder.setStatusLabel(label);
 	}
 

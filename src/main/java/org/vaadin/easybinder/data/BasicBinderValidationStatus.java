@@ -46,7 +46,7 @@ import java.util.stream.Collectors;
 public class BasicBinderValidationStatus<BEAN> implements Serializable {
 
     private final transient BasicBinder<BEAN> binder;
-    private final List<BasicBinderValidationStatus<?>> bindingStatuses;
+    private final List<BindingValidationStatus<?>> bindingStatuses;
     private final List<ValidationResult> binderStatuses;
 
     /**
@@ -57,7 +57,7 @@ public class BasicBinderValidationStatus<BEAN> implements Serializable {
      * @param bindingStatuses the validation results for the fields
      * @param binderStatuses  the validation results for binder level validation
      */
-    public BasicBinderValidationStatus(BasicBinder<BEAN> source, List<BasicBinderValidationStatus<?>> bindingStatuses,
+    public BasicBinderValidationStatus(BasicBinder<BEAN> source, List<BindingValidationStatus<?>> bindingStatuses,
                                        List<ValidationResult> binderStatuses) {
         Objects.requireNonNull(binderStatuses, "binding statuses cannot be null");
         Objects.requireNonNull(binderStatuses, "binder statuses cannot be null");
@@ -66,6 +66,22 @@ public class BasicBinderValidationStatus<BEAN> implements Serializable {
         this.binderStatuses = Collections.unmodifiableList(binderStatuses);
     }
 
+    /**
+     * Convenience method for creating a unresolved validation status for the given
+     * binder.
+     * <p>
+     * In practice this status means that the values might not be valid, but
+     * validation errors should be hidden.
+     *
+     * @param source the source binder
+     * @param <BEAN> the bean type of the binder
+     * @return a unresolved validation status
+     */
+    public static <BEAN> BasicBinderValidationStatus<BEAN> createUnresolvedStatus(BasicBinder<BEAN> source) {
+        return new BasicBinderValidationStatus<>(source, source.getBindings().stream()
+                .map(b -> BindingValidationStatus.createUnresolvedStatus(b)).collect(Collectors.toList()),
+                Collections.emptyList());
+    }
 
     /**
      * Gets whether validation for the binder passed or not.
@@ -83,7 +99,7 @@ public class BasicBinderValidationStatus<BEAN> implements Serializable {
      */
     public boolean hasErrors() {
         return binderStatuses.stream().filter(ValidationResult::isError).findAny().isPresent()
-                || bindingStatuses.stream().filter(BasicBinderValidationStatus::hasErrors).findAny().isPresent();
+                || bindingStatuses.stream().filter(BindingValidationStatus::isError).findAny().isPresent();
     }
 
     /**
@@ -169,7 +185,7 @@ public class BasicBinderValidationStatus<BEAN> implements Serializable {
     @SuppressWarnings("unchecked")
     public void notifyBindingValidationStatusHandlers(SerializablePredicate<BindingValidationStatus<?>> filter) {
         bindingStatuses.stream().filter(filter)
-                .forEach(s -> ((EasyBinding<BEAN, ?, ?>) s.getBinding()).getValidationStatusHandler()
+                .forEach(s -> ((BasicBinder.EasyBinding<BEAN, ?, ?>) s.getBinding()).getValidationStatusHandler()
                         .statusChange(s));
     }
 }

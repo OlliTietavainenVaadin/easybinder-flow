@@ -1,28 +1,26 @@
 package org.vaadin.easybinder.usagetest;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-
-import java.time.ZoneId;
-import java.util.stream.Stream;
-
-import javax.validation.constraints.Min;
-
+import com.vaadin.flow.component.HasText;
+import com.vaadin.flow.component.HasValue;
+import com.vaadin.flow.data.binder.BeanValidationBinder;
+import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.RequiredFieldConfigurator;
+import com.vaadin.flow.data.binder.Result;
+import com.vaadin.flow.data.converter.Converter;
+import com.vaadin.flow.data.converter.LocalDateTimeToDateConverter;
+import com.vaadin.flow.data.converter.LocalDateToDateConverter;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.vaadin.easybinder.testentity.Flight;
 import org.vaadin.easybinder.testentity.FlightValid;
 import org.vaadin.easybinder.testentity.FlightValidator;
 
-import com.vaadin.data.BeanValidationBinder;
-import com.vaadin.data.Binder;
-import com.vaadin.data.Converter;
-import com.vaadin.data.HasValue;
-import com.vaadin.data.RequiredFieldConfigurator;
-import com.vaadin.data.Result;
-import com.vaadin.data.converter.LocalDateTimeToDateConverter;
-import com.vaadin.data.converter.LocalDateToDateConverter;
-import com.vaadin.ui.Label;
+import javax.validation.constraints.Min;
+import java.time.ZoneId;
+import java.util.stream.Stream;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class VaadinBeanBinderTest extends BaseTests {
 
@@ -30,7 +28,7 @@ public class VaadinBeanBinderTest extends BaseTests {
 
 	@BeforeClass
 	public static void setup() {
-		RequiredFieldConfigurator MIN = annotation -> annotation.annotationType().equals(Min.class)
+		RequiredFieldConfigurator MIN = (annotation, ignore) -> annotation.annotationType().equals(Min.class)
 				&& ((Min) annotation).value() > 0;
 
 		binder.setRequiredConfigurator(MIN.chain(RequiredFieldConfigurator.DEFAULT));
@@ -78,7 +76,7 @@ public class VaadinBeanBinderTest extends BaseTests {
 	}
 
 	@Override
-	protected Stream<HasValue<?>> getFields() {
+	protected Stream<HasValue<?, ?>> getFields() {
 		return binder.getFields();
 	}
 
@@ -88,10 +86,10 @@ public class VaadinBeanBinderTest extends BaseTests {
 	}
 
 	@Override
-	protected void setStatusLabel(Label label) {
+	protected void setStatusLabel(HasText label) {
 		binder.setStatusLabel(label);
 	}
-		
+
 	@Test
 	@Override
 	public void testStringConversion() {

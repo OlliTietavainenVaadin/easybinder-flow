@@ -1,5 +1,6 @@
 package org.vaadin.easybinder.usagetest;
 
+import com.vaadin.flow.component.HasText;
 import com.vaadin.flow.component.HasValue;
 import org.junit.BeforeClass;
 import org.vaadin.easybinder.data.ReflectionBinder;
@@ -31,7 +32,7 @@ public class ManualReflectionBindingTest extends BaseTests {
     }
 
 	@Override
-	protected Stream<HasValue<?>> getFields() {
+	protected Stream<HasValue<?, ?>> getFields() {
 		return null;
 	}
 
@@ -41,7 +42,7 @@ public class ManualReflectionBindingTest extends BaseTests {
     }
 
     @Override
-    protected void setStatusLabel(Label label) {
+    protected void setStatusLabel(HasText label) {
         binder.setStatusLabel(label);
     }
 }

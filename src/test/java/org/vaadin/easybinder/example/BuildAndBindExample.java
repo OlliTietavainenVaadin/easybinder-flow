@@ -1,12 +1,11 @@
 package org.vaadin.easybinder.example;
 
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.html.Span;
 import org.vaadin.addonhelpers.AbstractTest;
 import org.vaadin.easybinder.data.AutoBinder;
 import org.vaadin.easybinder.testentity.Flight;
-
-import com.vaadin.ui.Component;
-import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.Label;
 
 public class BuildAndBindExample extends AbstractTest {
 	private static final long serialVersionUID = 1L;
@@ -16,11 +15,11 @@ public class BuildAndBindExample extends AbstractTest {
 		AutoBinder<Flight> binder = new AutoBinder<>(Flight.class);
 		
 		FormLayout f = new FormLayout();
-		f.addComponents(binder.buildAndBind("flightId"));
+		f.add(binder.buildAndBind("flightId"));
 		
-		Label statusLabel = new Label();
+		Span statusLabel = new Span();
 		binder.setStatusLabel(statusLabel);		
-		f.addComponents(statusLabel);
+		f.add(statusLabel);
 
 		binder.setBean(new Flight());
 

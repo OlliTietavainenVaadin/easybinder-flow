@@ -1,8 +1,10 @@
 package org.vaadin.easybinder.usagetest.com.vaadin.data;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.binder.BeanValidationBinder;
+import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.converter.StringToIntegerConverter;
+import org.junit.Test;
 
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -10,12 +12,8 @@ import javax.validation.ValidatorFactory;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
-import org.junit.Test;
+import static org.junit.Assert.*;
 
-import com.vaadin.data.BeanValidationBinder;
-import com.vaadin.data.Binder;
-import com.vaadin.data.converter.StringToIntegerConverter;
-import com.vaadin.ui.TextField;
 
 public class BeanValidationBinderNumberTest {
 

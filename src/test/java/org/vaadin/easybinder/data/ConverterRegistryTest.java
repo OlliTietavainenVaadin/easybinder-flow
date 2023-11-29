@@ -1,21 +1,16 @@
 package org.vaadin.easybinder.data;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import com.vaadin.flow.data.binder.Result;
+import com.vaadin.flow.data.converter.Converter;
+import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.junit.Test;
-import org.vaadin.easybinder.data.ConverterRegistry;
+import static org.junit.Assert.*;
 
-import com.vaadin.data.Converter;
-import com.vaadin.data.Result;
 
 public class ConverterRegistryTest {
 	ConverterRegistry r = ConverterRegistry.getInstance();

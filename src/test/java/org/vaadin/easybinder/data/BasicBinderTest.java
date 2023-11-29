@@ -1,22 +1,18 @@
 package org.vaadin.easybinder.data;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.atLeast;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.lang.annotation.Retention;
-import java.lang.annotation.Target;
-import java.util.Locale;
-import java.util.stream.Collectors;
+import com.vaadin.flow.component.HasValue;
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.binder.BindingValidationStatus;
+import com.vaadin.flow.data.converter.StringToIntegerConverter;
+import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.vaadin.easybinder.data.BasicBinder.EasyBinding;
+import org.vaadin.easybinder.data.converters.NullConverter;
+import org.vaadin.easybinder.data.converters.StringLengthConverterValidator;
+import org.vaadin.easybinder.usagetest.BasicBinderGroupingTest.MyEntity2;
+import org.vaadin.easybinder.usagetest.BasicBinderGroupingTest.MyGroup;
 
 import javax.validation.Constraint;
 import javax.validation.ConstraintValidator;
@@ -24,25 +20,17 @@ import javax.validation.ConstraintValidatorContext;
 import javax.validation.Payload;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
-
-import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.vaadin.easybinder.data.converters.NullConverter;
-import org.vaadin.easybinder.data.converters.StringLengthConverterValidator;
-import org.vaadin.easybinder.usagetest.BasicBinderGroupingTest.MyEntity2;
-import org.vaadin.easybinder.usagetest.BasicBinderGroupingTest.MyGroup;
-
-import com.vaadin.data.BindingValidationStatus;
-import com.vaadin.data.HasValue;
-import com.vaadin.data.HasValue.ValueChangeListener;
-import com.vaadin.data.converter.StringToIntegerConverter;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.UI;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+import java.util.Locale;
+import java.util.stream.Collectors;
 
 import static info.solidsoft.mockito.java8.AssertionMatcher.assertArg;
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import static org.junit.Assert.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 public class BasicBinderTest {
 
@@ -97,7 +85,7 @@ public class BasicBinderTest {
 	public void testBindNoSetter() {
 		MyEntity bean = new MyEntity();
 		@SuppressWarnings("unchecked")
-		HasValue<String> field = mock(HasValue.class);
+		HasValue<?, String> field = mock(HasValue.class);
 		EasyBinding<MyEntity, String, String> binding = binder.bind(field, MyEntity::getLastName, null, "firstName");
 		binding.read(bean);
 		assertFalse(binding.hasConversionError());
@@ -107,7 +95,7 @@ public class BasicBinderTest {
 	public void testBindReadOnly() {
 		MyEntity bean = new MyEntity();
 		@SuppressWarnings("unchecked")
-		HasValue<String> field = mock(HasValue.class);
+		HasValue<?, String> field = mock(HasValue.class);
 		when(field.isReadOnly()).thenReturn(true);
 		EasyBinding<MyEntity, String, String> binding = binder.bind(field, MyEntity::getLastName, MyEntity::setLastName, "firstName");
 		binding.read(bean);
@@ -227,7 +215,7 @@ public class BasicBinderTest {
 
 	@Test
 	public void testBindingFindLocaleComponentWithLocale() {
-		age.setLocale(Locale.CANADA);
+		UI.getCurrent().setLocale(Locale.CANADA);
 		EasyBinding<MyEntity, String, Integer> binding = binder.bind(age, MyEntity::getAge, MyEntity::setAge, "age", new StringLengthConverterValidator("Must be a number", 1, null).chain(new StringToIntegerConverter("Must be a number")));
 		assertEquals(Locale.CANADA, binding.findLocale());
 	}
@@ -267,7 +255,8 @@ public class BasicBinderTest {
 	@Test
 	public void testAssignUnassign() {
 		BinderStatusChangeListener statusChangeListener = mock(BinderStatusChangeListener.class);
-		ValueChangeListener<?> valueChangeListener = mock(ValueChangeListener.class);
+
+		HasValue.ValueChangeListener<?> valueChangeListener = mock(HasValue.ValueChangeListener.class);
 		binder.addStatusChangeListener(statusChangeListener);
 		binder.addValueChangeListener(valueChangeListener);
 
@@ -280,7 +269,7 @@ public class BasicBinderTest {
 		//verify(statusChangeListener, never()).statusChange(any());
 		//verify(statusChangeListener, times(1)).statusChange(any());
 		verify(statusChangeListener, atLeast(1)).statusChange(any());
-		verify(valueChangeListener, never()).valueChange(any());
+		verify(valueChangeListener, never()).valueChanged(any());
 
 		reset(statusChangeListener);
 
@@ -292,13 +281,13 @@ public class BasicBinderTest {
 		assertFalse(binder.getHasChanges());
 
 		verify(statusChangeListener, atLeast(1)).statusChange(assertArg(sc -> assertTrue(sc.hasValidationErrors())));
-		verify(valueChangeListener, never()).valueChange(any());
+		verify(valueChangeListener, never()).valueChanged(any());
 
 		reset(statusChangeListener);
 
 		lastName.setValue("giraf");
 
-		verify(valueChangeListener, times(1)).valueChange(any());
+		verify(valueChangeListener, times(1)).valueChanged(any());
 		verify(statusChangeListener, atLeast(1)).statusChange(assertArg(sc -> assertTrue(sc.hasValidationErrors())));
 		assertTrue(binder.getHasChanges());
 
@@ -307,7 +296,7 @@ public class BasicBinderTest {
 
 		firstName.setValue("giraf");
 
-		verify(valueChangeListener, times(1)).valueChange(any());
+		verify(valueChangeListener, times(1)).valueChanged(any());
 		verify(statusChangeListener, atLeast(1)).statusChange(assertArg(sc -> assertFalse(sc.hasValidationErrors())));
 		verify(statusChangeListener, atLeast(1)).statusChange(assertArg(sc -> assertFalse(sc.hasConversionErrors())));
 
@@ -431,8 +420,8 @@ public class BasicBinderTest {
 	@Test
 	public void testGroupValidationExplicitGroup() {
 		@SuppressWarnings("unchecked")
-		HasValue<String> field1 = mock(HasValue.class);
-		Label statusLabel = mock(Label.class);
+		HasValue<?, String> field1 = mock(HasValue.class);
+		Span statusLabel = mock(Span.class);
 
 		BasicBinder<MyEntity2> binder = new BasicBinder<>();
 
@@ -507,7 +496,7 @@ public class BasicBinderTest {
 	public void testBeanClassLevelValidation() {
 		TextField field1 = new TextField();
 		TextField field2 = new TextField();
-		Label statusLabel = new Label();
+		Span statusLabel = new Span();
 
 		BasicBinder<MyEntityBeanLevel> binder = new BasicBinder<>();
 
@@ -526,7 +515,7 @@ public class BasicBinderTest {
 		binder.setBean(bean);
 
 		assertFalse(binder.isValid());
-		assertEquals("At least one field must be set", statusLabel.getValue());
+		assertEquals("At least one field must be set", statusLabel.getText());
 
 		verify(statusChangeListener, atLeast(1)).statusChange(assertArg(sc -> assertTrue(sc.hasValidationErrors())));
 
@@ -537,7 +526,7 @@ public class BasicBinderTest {
 		verify(statusChangeListener, times(1)).statusChange(assertArg(sc -> assertFalse(sc.hasValidationErrors())));
 
 		assertTrue(binder.isValid());
-		assertEquals("", statusLabel.getValue());
+		assertEquals("", statusLabel.getText());
 
 	}
 

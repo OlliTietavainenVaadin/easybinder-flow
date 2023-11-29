@@ -1,31 +1,29 @@
 package org.vaadin.easybinder.example;
 
-import com.vaadin.data.BeanValidationBinder;
-import com.vaadin.data.Binder;
-import com.vaadin.data.Converter;
-import com.vaadin.data.RequiredFieldConfigurator;
-import com.vaadin.data.Result;
-import com.vaadin.data.converter.LocalDateTimeToDateConverter;
-import com.vaadin.data.converter.LocalDateToDateConverter;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.DateField;
-import com.vaadin.ui.DateTimeField;
-import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.RadioButtonGroup;
-import com.vaadin.ui.TextField;
-
-import java.time.ZoneId;
-import java.util.EnumSet;
-
-import javax.validation.constraints.Min;
-
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.datepicker.DatePicker;
+import com.vaadin.flow.component.datetimepicker.DateTimePicker;
+import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.binder.BeanValidationBinder;
+import com.vaadin.flow.data.binder.Binder;
+import com.vaadin.flow.data.binder.RequiredFieldConfigurator;
+import com.vaadin.flow.data.binder.Result;
+import com.vaadin.flow.data.converter.Converter;
+import com.vaadin.flow.data.converter.LocalDateTimeToDateConverter;
+import com.vaadin.flow.data.converter.LocalDateToDateConverter;
 import org.vaadin.addonhelpers.AbstractTest;
 import org.vaadin.easybinder.testentity.Flight;
+import org.vaadin.easybinder.testentity.FlightId.LegType;
 import org.vaadin.easybinder.testentity.FlightValid;
 import org.vaadin.easybinder.testentity.FlightValidator;
-import org.vaadin.easybinder.testentity.FlightId.LegType;
+
+import javax.validation.constraints.Min;
+import java.time.ZoneId;
+import java.util.EnumSet;
 
 public class VaadinBeanBinderExample extends AbstractTest {
 	private static final long serialVersionUID = 1L;
@@ -33,19 +31,19 @@ public class VaadinBeanBinderExample extends AbstractTest {
 	TextField airline = new TextField("Airline");
 	TextField flightNumber = new TextField("Flight number");
 	TextField flightSuffix = new TextField("Flight suffix");
-	DateField date = new DateField("Date");
+	DatePicker date = new DatePicker("Date");
 	RadioButtonGroup<LegType> legType = new RadioButtonGroup<>("Leg type", EnumSet.allOf(LegType.class));
-	DateTimeField sbt = new DateTimeField("SBT");
-	DateTimeField ebt = new DateTimeField("EBT");
-	DateTimeField abt = new DateTimeField("ABT");
+	DateTimePicker sbt = new DateTimePicker("SBT");
+	DateTimePicker ebt = new DateTimePicker("EBT");
+	DateTimePicker abt = new DateTimePicker("ABT");
 	TextField gate = new TextField("Gate");
-	CheckBox canceled = new CheckBox("Canceled");
+	Checkbox canceled = new Checkbox("Canceled");
 
 	@Override
 	public Component getTestComponent() {
 		BeanValidationBinder<Flight> binder = new BeanValidationBinder<>(Flight.class);
 
-		RequiredFieldConfigurator MIN = annotation -> annotation.annotationType().equals(Min.class)
+		RequiredFieldConfigurator MIN = (annotation, ignore) -> annotation.annotationType().equals(Min.class)
 				&& ((Min) annotation).value() > 0;
 
 		binder.setRequiredConfigurator(MIN.chain(RequiredFieldConfigurator.DEFAULT));
@@ -87,11 +85,11 @@ public class VaadinBeanBinderExample extends AbstractTest {
 
 		FormLayout f = new FormLayout();
 
-		f.addComponents(airline, flightNumber, flightSuffix, date, legType, sbt, ebt, abt, gate, canceled);
+		f.add(airline, flightNumber, flightSuffix, date, legType, sbt, ebt, abt, gate, canceled);
 
-		Label statusLabel = new Label();
+		Span statusLabel = new Span();
 		binder.setStatusLabel(statusLabel);		
-		f.addComponents(statusLabel);	
+		f.add(statusLabel);
 				
 		binder.setBean(new Flight());
 
