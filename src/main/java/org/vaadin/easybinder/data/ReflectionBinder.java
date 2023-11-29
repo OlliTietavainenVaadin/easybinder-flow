@@ -18,6 +18,7 @@
  */
 package org.vaadin.easybinder.data;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -31,23 +32,20 @@ import java.util.logging.Logger;
 
 import javax.validation.constraints.Min;
 
+import com.vaadin.flow.component.HasValue;
+import com.vaadin.flow.data.binder.*;
+import com.vaadin.flow.data.converter.Converter;
+import com.vaadin.flow.data.provider.DataProvider;
+import com.vaadin.flow.data.provider.HasDataView;
+import com.vaadin.flow.data.provider.Query;
+import com.vaadin.flow.function.SerializablePredicate;
+import com.vaadin.flow.function.ValueProvider;
+import com.vaadin.flow.internal.ReflectTools;
 import org.vaadin.easybinder.data.converters.NullConverter;
 import org.vaadin.easybinder.data.converters.NullConverterPrimitiveTarget;
 
 import com.googlecode.gentyref.GenericTypeReflector;
-import com.vaadin.data.BeanPropertySet;
-import com.vaadin.data.BeanPropertySet.NestedBeanPropertyDefinition;
-import com.vaadin.data.Converter;
-import com.vaadin.data.HasItems;
-import com.vaadin.data.HasValue;
-import com.vaadin.data.PropertyDefinition;
-import com.vaadin.data.PropertySet;
-import com.vaadin.data.RequiredFieldConfigurator;
-import com.vaadin.data.ValueProvider;
-import com.vaadin.data.provider.DataProvider;
-import com.vaadin.data.provider.Query;
-import com.vaadin.server.Setter;
-import com.vaadin.util.ReflectTools;
+
 
 public class ReflectionBinder<BEAN> extends BasicBinder<BEAN> implements HasGenericType<BEAN> {
 	protected Class<BEAN> clazz;
@@ -58,8 +56,12 @@ public class ReflectionBinder<BEAN> extends BasicBinder<BEAN> implements HasGene
 
 	protected ConverterRegistry converterRegistry = ConverterRegistry.getInstance();
 
-	private static RequiredFieldConfigurator min = annotation -> annotation.annotationType().equals(Min.class)
-			&& ((Min) annotation).value() > 0;
+	private static RequiredFieldConfigurator min = new RequiredFieldConfigurator() {
+		@Override
+		public boolean test(Annotation annotation, Binder.BindingBuilder<?, ?> bindingBuilder) {
+			return annotation.annotationType().equals(Min.class)  && ((Min) annotation).value() > 0;
+		}
+	};
 
 	protected Logger log = Logger.getLogger(getClass().getName());
 
@@ -75,8 +77,8 @@ public class ReflectionBinder<BEAN> extends BasicBinder<BEAN> implements HasGene
 		this.converterRegistry = converterRegistry;
 	}
 
-	public <PRESENTATION, MODEL> EasyBinding<BEAN, PRESENTATION, MODEL> bind(HasValue<PRESENTATION> field,
-			String propertyName) {
+	public <PRESENTATION, MODEL> EasyBinding<BEAN, PRESENTATION, MODEL> bind(HasValue<?, PRESENTATION> field,
+																			 String propertyName) {
 
 		boolean readOnly = false;
 
@@ -121,13 +123,13 @@ public class ReflectionBinder<BEAN> extends BasicBinder<BEAN> implements HasGene
 		return bind(field, propertyName, converter, readOnly);
 	}
 
-	public <PRESENTATION, MODEL> EasyBinding<BEAN, PRESENTATION, MODEL> bind(HasValue<PRESENTATION> field,
+	public <PRESENTATION, MODEL> EasyBinding<BEAN, PRESENTATION, MODEL> bind(HasValue<?, PRESENTATION> field,
 			String propertyName, Converter<PRESENTATION, ?> converter) {
 		return bind(field, propertyName, converter, false);
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public <PRESENTATION, MODEL> EasyBinding<BEAN, PRESENTATION, MODEL> bind(HasValue<PRESENTATION> field,
+	public <PRESENTATION, MODEL> EasyBinding<BEAN, PRESENTATION, MODEL> bind(HasValue<?, PRESENTATION> field,
 			String propertyName, Converter<PRESENTATION, ?> converter, boolean readOnly) {
 		Objects.requireNonNull(converter);
 		Objects.requireNonNull(propertyName, "Property name cannot be null");
@@ -146,7 +148,7 @@ public class ReflectionBinder<BEAN> extends BasicBinder<BEAN> implements HasGene
 		boundProperties.put(propertyName, binding);
 
 		Optional<Field> modelField = getDeclaredFieldByName(definition.getPropertyHolderType(), getTopLevelName(definition));
-		if (Arrays.asList(modelField.get().getAnnotations()).stream().anyMatch(requiredConfigurator)) {
+		if (Arrays.asList(modelField.get().getAnnotations()).stream().anyMatch((SerializablePredicate<Annotation>) annotation -> min.test(annotation, null))) {
 			field.setRequiredIndicatorVisible(true);
 		}
 
@@ -192,7 +194,7 @@ public class ReflectionBinder<BEAN> extends BasicBinder<BEAN> implements HasGene
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	protected <PRESENTATION> Optional<Class<PRESENTATION>> getPresentationTypeForField(HasValue<PRESENTATION> field) {
+	protected <PRESENTATION> Optional<Class<PRESENTATION>> getPresentationTypeForField(HasValue<?, PRESENTATION> field) {
 		// Unfortunately HasValue in Vaadin does not define a getType() method.
 
 		// Try to find the field type using reflection. This will work for any fields
@@ -228,17 +230,19 @@ public class ReflectionBinder<BEAN> extends BasicBinder<BEAN> implements HasGene
 		}
 
 		// If the field has items we can fetch the type from the first item
-		if (field instanceof HasItems) {
-			HasItems<PRESENTATION> hasItems = (HasItems<PRESENTATION>) field;
-			DataProvider<?, ?> dp = hasItems.getDataProvider();
-			Query<?, ?> q = new Query<>(0, 1, null, null, null);
-			if (dp.size((Query) q) > 0) {
-				Optional<Class<PRESENTATION>> presentationClass = hasItems.getDataProvider().fetch((Query) q).findFirst().map(e -> e.getClass());
-				if (presentationClass.get().isAnonymousClass()) {
-					log.log(Level.INFO, "PresentationType represents a anonymous class, fetching enclosing class.");
-					presentationClass = hasItems.getDataProvider().fetch((Query) q).findFirst().map(e -> e.getClass().getEnclosingClass());
+		if (field instanceof HasDataView) {
+			HasDataView<PRESENTATION, ?, ?> hasDataView = (HasDataView<PRESENTATION,?, ?>) field;
+			try {
+				PRESENTATION item = hasDataView.getGenericDataView().getItem(0);
+				if (item != null) {
+					Optional<Class<PRESENTATION>> presentationClass = Optional.of((Class<PRESENTATION>) item.getClass());
+					if (presentationClass.get().isAnonymousClass()) {
+						presentationClass = Optional.of((Class<PRESENTATION>) item.getClass().getEnclosingClass());
+					}
+					return presentationClass;
 				}
-				return presentationClass;
+			} catch (Exception e) {
+
 			}
 		}
 
@@ -299,8 +303,8 @@ public class ReflectionBinder<BEAN> extends BasicBinder<BEAN> implements HasGene
 	 */
 	String getTopLevelName(PropertyDefinition<BEAN, ?> definition) {
 		String propertyDefinitionName = definition.getName();
-		if (definition instanceof NestedBeanPropertyDefinition) {
-			NestedBeanPropertyDefinition<BEAN, ?> nbpd = (NestedBeanPropertyDefinition<BEAN, ?>) definition;
+		if (definition instanceof BeanPropertySet.NestedBeanPropertyDefinition) {
+			BeanPropertySet.NestedBeanPropertyDefinition<BEAN, ?> nbpd = (BeanPropertySet.NestedBeanPropertyDefinition<BEAN, ?>) definition;
 			PropertyDefinition<BEAN, ?> parent = nbpd.getParent();
 			if (parent != null) {
 				String prefix = parent.getName() + ".";

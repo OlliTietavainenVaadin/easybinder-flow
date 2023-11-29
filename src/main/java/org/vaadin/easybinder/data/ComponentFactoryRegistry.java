@@ -39,19 +39,20 @@ import java.util.logging.Logger;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.datepicker.DatePicker;
+import com.vaadin.flow.component.datetimepicker.DateTimePicker;
+import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.shared.util.SharedUtil;
 import org.vaadin.easybinder.ui.EComboBox;
 
 import com.googlecode.gentyref.GenericTypeReflector;
-import com.vaadin.shared.util.SharedUtil;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.DateField;
-import com.vaadin.ui.DateTimeField;
-import com.vaadin.ui.Grid;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.TwinColSelect;
 
-public class ComponentFactoryRegistry {
+
+public class
+ComponentFactoryRegistry {
 	private static ComponentFactoryRegistry instance;
 
 	protected Logger log = Logger.getLogger(getClass().getName());
@@ -79,17 +80,17 @@ public class ComponentFactoryRegistry {
 		addBuildPattern(Date.class,
 				e -> Arrays.asList(e.getAnnotations()).stream().filter(f -> f instanceof Temporal)
 						.map(f -> (Temporal) f).filter(f -> f.value() == TemporalType.TIMESTAMP).findAny().isPresent(),
-				e -> new DateTimeField(SharedUtil.camelCaseToHumanFriendly(e.getName())));
+				e -> new DateTimePicker(SharedUtil.camelCaseToHumanFriendly(e.getName())));
 		addBuildPattern(Date.class,
 				e -> !Arrays.asList(e.getAnnotations()).stream().filter(f -> f instanceof Temporal)
 						.map(f -> (Temporal) f).filter(f -> f.value() == TemporalType.TIMESTAMP).findAny().isPresent(),
-				e -> new DateField(SharedUtil.camelCaseToHumanFriendly(e.getName())));
+				e -> new DatePicker(SharedUtil.camelCaseToHumanFriendly(e.getName())));
 		addBuildPattern(LocalDate.class, e -> true,
-				e -> new DateField(SharedUtil.camelCaseToHumanFriendly(e.getName())));
+				e -> new DatePicker(SharedUtil.camelCaseToHumanFriendly(e.getName())));
 		addBuildPattern(LocalDateTime.class, e -> true,
-				e -> new DateTimeField(SharedUtil.camelCaseToHumanFriendly(e.getName())));
-		addBuildPattern(Boolean.class, e -> true, e -> new CheckBox(SharedUtil.camelCaseToHumanFriendly(e.getName())));
-		addBuildPattern(boolean.class, e -> true, e -> new CheckBox(SharedUtil.camelCaseToHumanFriendly(e.getName())));
+				e -> new DateTimePicker(SharedUtil.camelCaseToHumanFriendly(e.getName())));
+		addBuildPattern(Boolean.class, e -> true, e -> new Checkbox(SharedUtil.camelCaseToHumanFriendly(e.getName())));
+		addBuildPattern(boolean.class, e -> true, e -> new Checkbox(SharedUtil.camelCaseToHumanFriendly(e.getName())));
 
 		addBuildPattern(Enum.class, e -> true, e -> {
 			Class<?> clazz = e.getGenericType() != null ? (Class<?>) e.getGenericType() : e.getType();
@@ -99,43 +100,27 @@ public class ComponentFactoryRegistry {
 			return c;
 		});
 
-		addBuildPattern(EnumSet.class, e -> true, e -> {
-			@SuppressWarnings({ "rawtypes", "unchecked" })
-			Class<Enum> valueType = (Class<Enum>) GenericTypeReflector.getTypeParameter(e.getGenericType(),
-					EnumSet.class.getTypeParameters()[0]);
-			@SuppressWarnings({ "rawtypes", "unchecked" })
-			Collection<Enum> c = EnumSet.allOf(valueType);
-			@SuppressWarnings({ "rawtypes", "serial" })
-			TwinColSelect<Enum> t = new TwinColSelect<Enum>(SharedUtil.camelCaseToHumanFriendly(e.getName()), c) { };
-			return t;
-		});
-
-		addBuildPattern(Set.class, e -> true, e -> {
-			@SuppressWarnings({ "serial" })
-			TwinColSelect<? extends Object> t = new TwinColSelect<Object>(SharedUtil.camelCaseToHumanFriendly(e.getName())) { };
-			return t;
-		});
 		addBuildPattern(Collection.class, e -> String.class.equals((Class<?>) GenericTypeReflector
 				.getTypeParameter(e.getGenericType(), Collection.class.getTypeParameters()[0])), e -> {
-					Grid<String> g = new Grid<String>(SharedUtil.camelCaseToHumanFriendly(e.getName()));
+					Grid<String> g = new Grid<String>();
 					g.addColumn(f -> f);
 					return g;
 				});
 		addBuildPattern(ArrayList.class, e -> String.class.equals((Class<?>) GenericTypeReflector
 				.getTypeParameter(e.getGenericType(), ArrayList.class.getTypeParameters()[0])), e -> {
-					Grid<String> g = new Grid<String>(SharedUtil.camelCaseToHumanFriendly(e.getName()));
+					Grid<String> g = new Grid<String>();
 					g.addColumn(f -> f);
 					return g;
 				});
 		addBuildPattern(List.class, e -> String.class.equals((Class<?>) GenericTypeReflector
 				.getTypeParameter(e.getGenericType(), List.class.getTypeParameters()[0])), e -> {
-					Grid<String> g = new Grid<String>(SharedUtil.camelCaseToHumanFriendly(e.getName()));
+					Grid<String> g = new Grid<String>();
 					g.addColumn(f -> f);
 					return g;
 				});
 
 		addBuildPattern(Map.class, e -> true, e -> {
-			Grid<Map.Entry<?, ?>> g = new Grid<>(SharedUtil.camelCaseToHumanFriendly(e.getName()));
+			Grid<Map.Entry<?, ?>> g = new Grid<>();
 			g.addColumn(f -> f.getKey());
 			g.addColumn(f -> f.getValue());
 			return g;

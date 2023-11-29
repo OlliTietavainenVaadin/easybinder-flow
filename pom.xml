@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.vaadin</groupId>
 	<artifactId>easybinder</artifactId>
-	<version>0.6.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>easybinder</name>
 	<packaging>bundle</packaging>
 	<organization>
@@ -10,7 +10,7 @@
 	</organization>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<vaadin.version>8.4.0</vaadin.version>
+		<vaadin.version>24.2.4</vaadin.version>
 		<vaadin.plugin.version>${vaadin.version}</vaadin.plugin.version>
 		<!-- ZIP Manifest fields -->
 		<Implementation-Version>${project.version}</Implementation-Version>
@@ -42,7 +42,7 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.vaadin</groupId>
-			<artifactId>vaadin-server</artifactId>
+			<artifactId>vaadin-core</artifactId>
 			<version>${vaadin.version}</version>
 		</dependency>
 		<dependency>
@@ -79,18 +79,8 @@
 			<version>2.1</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>com.vaadin</groupId>
-			<artifactId>vaadin-themes</artifactId>
-			<version>${vaadin.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.vaadin</groupId>
-			<artifactId>vaadin-client-compiled</artifactId>
-			<version>${vaadin.version}</version>
-			<scope>test</scope>
-		</dependency>
+
+
 		<dependency>
 			<groupId>net.avh4.test</groupId>
 			<artifactId>junit-nested</artifactId>
@@ -270,7 +260,6 @@
 							<encoding>UTF-8</encoding>
 							<consoleOutput>true</consoleOutput>
 							<failsOnError>true</failsOnError>
-							<linkXRef>false</linkXRef>
 						</configuration>
 						<goals>
 							<goal>check</goal>
@@ -416,25 +405,6 @@
 			<id>browsertests</id>
 			<build>
 				<plugins>
-					<plugin>
-						<groupId>com.github.webdriverextensions</groupId>
-						<artifactId>webdriverextensions-maven-plugin</artifactId>
-						<version>3.1.1</version>
-						<executions>
-							<execution>
-								<goals>
-									<goal>install-drivers</goal>
-								</goals>
-							</execution>
-						</executions>
-						<configuration>
-							<drivers>
-								<driver>
-									<name>phantomjs</name>
-								</driver>
-							</drivers>
-						</configuration>
-					</plugin>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-failsafe-plugin</artifactId>

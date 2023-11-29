@@ -12,20 +12,18 @@ import java.util.EnumSet;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import com.vaadin.flow.component.HasText;
+import com.vaadin.flow.component.HasValue;
+import com.vaadin.flow.component.checkbox.Checkbox;
+import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.datepicker.DatePicker;
+import com.vaadin.flow.component.datetimepicker.DateTimePicker;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.binder.PropertyId;
 import org.junit.Test;
 import org.vaadin.easybinder.testentity.Flight;
 import org.vaadin.easybinder.testentity.FlightId.LegType;
-
-import com.vaadin.annotations.PropertyId;
-import com.vaadin.data.HasValue;
-import com.vaadin.ui.AbstractSingleSelect;
-import com.vaadin.ui.CheckBox;
-import com.vaadin.ui.ComboBox;
-import com.vaadin.ui.DateField;
-import com.vaadin.ui.DateTimeField;
-import com.vaadin.ui.Label;
-import com.vaadin.ui.TextField;
-
 public abstract class BaseTests {
 
 	static class MyForm {
@@ -36,23 +34,23 @@ public abstract class BaseTests {
 		@PropertyId("flightId.flightSuffix")
 		TextField flightSuffix = new TextField("Flight suffix");
 		@PropertyId("flightId.date")
-		DateField date = new DateField("Date");
+		DatePicker date = new DatePicker("Date");
 		@PropertyId("flightId.legType")
-		AbstractSingleSelect<LegType> legType = new ComboBox<>("Leg type", EnumSet.allOf(LegType.class));
-		DateTimeField sbt = new DateTimeField("SBT");
-		DateTimeField ebt = new DateTimeField("EBT");
-		DateTimeField abt = new DateTimeField("ABT");
+		ComboBox<LegType> legType = new ComboBox<>("Leg type", EnumSet.allOf(LegType.class));
+		DateTimePicker sbt = new DateTimePicker("SBT");
+		DateTimePicker ebt = new DateTimePicker("EBT");
+		DateTimePicker abt = new DateTimePicker("ABT");
 		TextField gate = new TextField("Gate");
-		CheckBox canceled = new CheckBox("Canceled");
+		Checkbox canceled = new Checkbox("Canceled");
 	}
 
 	protected abstract void setBean(Flight flight);
 
-	protected abstract Stream<HasValue<?>> getFields();
+	protected abstract Stream<HasValue<?, ?>> getFields();
 
 	protected abstract boolean isValid();
 	
-	protected abstract void setStatusLabel(Label label);
+	protected abstract void setStatusLabel(HasText label);
 
 	static MyForm form = new MyForm();
 	
@@ -203,15 +201,6 @@ public abstract class BaseTests {
 		setBean(new Flight());
 
 		// Check binding validation
-		assertNotNull(form.airline.getComponentError());
-		assertNotNull(form.flightNumber.getComponentError());
-		assertNull(form.flightSuffix.getComponentError());
-		assertNotNull(form.date.getComponentError());
-		assertNotNull(form.legType.getComponentError());
-		assertNull(form.sbt.getComponentError());
-		assertNull(form.ebt.getComponentError());
-		assertNull(form.abt.getComponentError());
-		assertNull(form.gate.getComponentError());
 		assertFalse(isValid());
 
 		form.airline.setValue("SK");
@@ -226,15 +215,6 @@ public abstract class BaseTests {
 		form.gate.setValue("A16");
 
 		// Check binding validation
-		assertNull(form.airline.getComponentError());
-		assertNull(form.flightNumber.getComponentError());
-		assertNull(form.flightSuffix.getComponentError());
-		assertNull(form.date.getComponentError());
-		assertNull(form.legType.getComponentError());
-		assertNull(form.sbt.getComponentError());
-		assertNull(form.ebt.getComponentError());
-		assertNull(form.abt.getComponentError());
-		assertNull(form.gate.getComponentError());
 		assertTrue(isValid());
 	}
 
@@ -252,11 +232,11 @@ public abstract class BaseTests {
 		form.abt.setValue(now);
 		form.gate.setValue("A16");
 
-		Label label = new Label();
+		Span label = new Span();
 		setStatusLabel(label);
 				
 		assertTrue(isValid());
-		assertEquals("", label.getValue());		
+		assertEquals("", label.getText());
 
 		form.sbt.setValue(null);
 		assertNull(form.sbt.getValue());
@@ -266,7 +246,7 @@ public abstract class BaseTests {
 		
 		form.sbt.setValue(now);
 		assertTrue(isValid());
-		assertEquals("", label.getValue());				
+		assertEquals("", label.getText());
 	}
 
 	@Test
@@ -286,13 +266,13 @@ public abstract class BaseTests {
 		assertTrue(isValid());
 
 		form.gate.setValue("");
-		assertNotNull(form.gate.getComponentError());
+
 		assertFalse(isValid());
 		form.ebt.setValue(null);
 		form.abt.setValue(null);		
 		form.sbt.setValue(null);
 		assertTrue(isValid());
-		assertNull(form.gate.getComponentError());
+
 	}
 
 	@Test

@@ -2,11 +2,9 @@ package org.vaadin.easybinder.ui;
 
 import java.util.Collection;
 
+import com.vaadin.flow.data.provider.ListDataProvider;
 import org.vaadin.easybinder.data.HasGenericType;
-
-import com.vaadin.data.provider.ListDataProvider;
-import com.vaadin.ui.ComboBox;
-
+import com.vaadin.flow.component.combobox.ComboBox;
 public class EComboBox<T> extends ComboBox<T> implements HasGenericType<T> {
 
 	private static final long serialVersionUID = 1L;
@@ -21,7 +19,7 @@ public class EComboBox<T> extends ComboBox<T> implements HasGenericType<T> {
 	public EComboBox(Class<T> type, String caption, ListDataProvider<T> dataProvider) {
 		super(caption);
 		this.type = type;
-		setDataProvider(dataProvider);
+		setItems(dataProvider);
 	}
 
 	public EComboBox(Class<T> type, String caption, Collection<T> items) {

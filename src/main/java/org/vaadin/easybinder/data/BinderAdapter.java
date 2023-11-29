@@ -5,23 +5,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import org.vaadin.easybinder.data.BasicBinder.EasyBinding;
+import com.vaadin.flow.component.HasText;
+import com.vaadin.flow.component.HasValue;
+import com.vaadin.flow.data.binder.*;
+import com.vaadin.flow.function.SerializablePredicate;
+import com.vaadin.flow.function.ValueProvider;
+import com.vaadin.flow.shared.Registration;
 
-import com.vaadin.data.Binder;
-import com.vaadin.data.BinderValidationStatus;
-import com.vaadin.data.BinderValidationStatusHandler;
-import com.vaadin.data.ErrorMessageProvider;
-import com.vaadin.data.HasValue;
-import com.vaadin.data.StatusChangeEvent;
-import com.vaadin.data.StatusChangeListener;
-import com.vaadin.data.ValidationException;
-import com.vaadin.data.Validator;
-import com.vaadin.data.ValueProvider;
-import com.vaadin.data.HasValue.ValueChangeListener;
-import com.vaadin.server.SerializablePredicate;
-import com.vaadin.server.Setter;
-import com.vaadin.shared.Registration;
-import com.vaadin.ui.Label;
 
 @SuppressWarnings("serial")
 public class BinderAdapter<BEAN> extends Binder<BEAN> {
@@ -51,23 +41,23 @@ public class BinderAdapter<BEAN> extends Binder<BEAN> {
 	}
 
 	@Override
-	public <FIELDVALUE> BindingBuilder<BEAN, FIELDVALUE> forField(HasValue<FIELDVALUE> field) {
+	public <FIELDVALUE> BindingBuilder<BEAN, FIELDVALUE> forField(HasValue<?, FIELDVALUE> field) {
 		throw new UnsupportedOperationException("Not supported");
 	}
 
 	@Override
-	public <FIELDVALUE> BindingBuilder<BEAN, FIELDVALUE> forMemberField(HasValue<FIELDVALUE> field) {
+	public <FIELDVALUE> BindingBuilder<BEAN, FIELDVALUE> forMemberField(HasValue<?, FIELDVALUE> field) {
 		throw new UnsupportedOperationException("Not supported");
 	}
 
 	@Override
-	public <FIELDVALUE> Binding<BEAN, FIELDVALUE> bind(HasValue<FIELDVALUE> field,
-			ValueProvider<BEAN, FIELDVALUE> getter, Setter<BEAN, FIELDVALUE> setter) {
+	public <FIELDVALUE> Binding<BEAN, FIELDVALUE> bind(HasValue<?, FIELDVALUE> field,
+													   ValueProvider<BEAN, FIELDVALUE> getter, Setter<BEAN, FIELDVALUE> setter) {
 		throw new UnsupportedOperationException("Not supported");
 	}
 
 	@Override
-	public <FIELDVALUE> Binding<BEAN, FIELDVALUE> bind(HasValue<FIELDVALUE> field, String propertyName) {
+	public <FIELDVALUE> Binding<BEAN, FIELDVALUE> bind(HasValue<?, FIELDVALUE> field, String propertyName) {
 		if (binder instanceof ReflectionBinder) {
 			return ((ReflectionBinder<BEAN>) binder).bind(field, propertyName);
 		} else {
@@ -173,13 +163,13 @@ public class BinderAdapter<BEAN> extends Binder<BEAN> {
 	}
 
 	@Override
-	public void setStatusLabel(Label statusLabel) {
-		binder.setStatusLabel(statusLabel);
+	public void setStatusLabel(HasText statusLabel) {
+		super.setStatusLabel(statusLabel);
 	}
 
 	@Override
-	public Optional<Label> getStatusLabel() {
-		return binder.getStatusLabel();
+	public Optional<HasText> getStatusLabel() {
+		return super.getStatusLabel();
 	}
 
 	@Override
@@ -203,7 +193,7 @@ public class BinderAdapter<BEAN> extends Binder<BEAN> {
 	}
 
 	@Override
-	public Registration addValueChangeListener(ValueChangeListener<?> listener) {
+	public Registration addValueChangeListener(HasValue.ValueChangeListener<? super HasValue.ValueChangeEvent<?>> listener) {
 		return binder.addValueChangeListener(listener);
 	}
 
@@ -232,12 +222,14 @@ public class BinderAdapter<BEAN> extends Binder<BEAN> {
 	}
 
 	// @Override (Since 8.1)
-	public Stream<HasValue<?>> getFields() {
+	public Stream<HasValue<?, ?>> getFields() {
 		return binder.getFields();
 	}
 
+
+
 	// @Override (Since 8.2)
-	public void removeBinding(HasValue<?> field) {
+	public void removeBinding(HasValue<?, ?> field) {
 		binder.removeBinding(field);
 	}
 

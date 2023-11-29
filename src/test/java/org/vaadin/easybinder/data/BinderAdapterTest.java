@@ -13,9 +13,6 @@ import java.util.Arrays;
 import java.util.Date;
 
 import org.junit.Test;
-import org.vaadin.easybinder.data.AutoBinder;
-import org.vaadin.easybinder.data.BasicBinder.EasyBinding;
-import org.vaadin.easybinder.data.BinderAdapter;
 import org.vaadin.easybinder.testentity.Flight;
 import org.vaadin.easybinder.testentity.FlightId;
 import org.vaadin.easybinder.testentity.FlightId.LegType;

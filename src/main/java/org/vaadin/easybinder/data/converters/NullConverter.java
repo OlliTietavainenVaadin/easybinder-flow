@@ -15,28 +15,30 @@
  */
 package org.vaadin.easybinder.data.converters;
 
-import com.vaadin.data.Converter;
-import com.vaadin.data.Result;
-import com.vaadin.data.ValueContext;
+import com.vaadin.flow.data.binder.Result;
+import com.vaadin.flow.data.binder.ValueContext;
+import com.vaadin.flow.data.converter.Converter;
 
 @SuppressWarnings("serial")
 public class NullConverter<T> implements Converter<T, T> {
 
-	protected T nullRepresentation;
+    protected T nullRepresentation;
 
-	public NullConverter(T nullRepresentation) {
-		this.nullRepresentation = nullRepresentation;
-	}
+    public NullConverter(T nullRepresentation) {
+        this.nullRepresentation = nullRepresentation;
+    }
 
-	@Override
-	public Result<T> convertToModel(T value, ValueContext context) {
-		return (nullRepresentation == null && value == null)
-				|| (nullRepresentation != null && nullRepresentation.equals(value)) ? Result.ok(null)
-						: Result.ok(value);
-	}
+    @Override
+    public Result<T> convertToModel(T value, ValueContext context) {
+        return (nullRepresentation == null && value == null)
+                || (nullRepresentation != null && nullRepresentation.equals(value)) ? Result.ok(null)
+                : Result.ok(value);
+    }
 
-	@Override
-	public T convertToPresentation(T value, ValueContext context) {
-		return value == null ? nullRepresentation : value;
-	}
+    @Override
+    public T convertToPresentation(T value, ValueContext context) {
+        return value == null ? nullRepresentation : value;
+    }
+
+
 }

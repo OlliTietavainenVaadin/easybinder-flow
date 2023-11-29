@@ -7,7 +7,6 @@ import org.vaadin.easybinder.data.AutoBinder;
 import org.vaadin.easybinder.testentity.Flight;
 import org.vaadin.easybinder.testentity.FlightId;
 import org.vaadin.easybinder.testentity.FlightId.LegType;
-import org.vaadin.easybinder.ui.EGrid;
 
 import com.vaadin.ui.Component;
 

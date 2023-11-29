@@ -1,9 +1,8 @@
 package org.vaadin.easybinder.data.converters;
 
-import com.vaadin.data.Converter;
-import com.vaadin.data.Result;
-import com.vaadin.data.ValueContext;
-
+import com.vaadin.flow.data.binder.Result;
+import com.vaadin.flow.data.binder.ValueContext;
+import com.vaadin.flow.data.converter.Converter;
 public class StringLengthConverterValidator implements Converter<String, String> {
 
 	private static final long serialVersionUID = 1L;

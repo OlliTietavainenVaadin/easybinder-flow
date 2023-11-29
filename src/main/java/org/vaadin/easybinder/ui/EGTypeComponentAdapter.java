@@ -1,17 +1,18 @@
 package org.vaadin.easybinder.ui;
 
+import com.vaadin.flow.component.HasValue;
 import org.vaadin.easybinder.data.HasGenericType;
 
-import com.vaadin.data.HasValue;
-import com.vaadin.ui.Component;
-import com.vaadin.ui.CustomField;
+
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.customfield.CustomField;
 
 @SuppressWarnings("serial")
 public class EGTypeComponentAdapter<T> extends CustomField<T> implements HasGenericType<T> {
 
 	Class<T> genericType;
 	Component component;
-	HasValue<T> hasValue;
+	HasValue<?, T> hasValue;
 
 	T value;
 
@@ -19,7 +20,7 @@ public class EGTypeComponentAdapter<T> extends CustomField<T> implements HasGene
 	public EGTypeComponentAdapter(Class<T> genericType, Component adaptee) {
 		this.genericType = genericType;
 		this.component = adaptee;
-		hasValue = (HasValue<T>) adaptee;
+		hasValue = (HasValue<?, T>) adaptee;
 		hasValue.addValueChangeListener(e -> setValue(e.getValue()));
 	}
 
@@ -33,18 +34,17 @@ public class EGTypeComponentAdapter<T> extends CustomField<T> implements HasGene
 		return hasValue.getValue();
 	}
 
-	@Override
-	protected Component initContent() {
-		return component;
-	}
-
-	@Override
-	protected void doSetValue(T value) {
-		hasValue.setValue(value);
-	}
-
 	public Component getEmbeddedComponent() {
 		return component;
 	}
 
+	@Override
+	protected T generateModelValue() {
+		return hasValue.getValue();
+	}
+
+	@Override
+	protected void setPresentationValue(T t) {
+		hasValue.setValue(t);
+	}
 }

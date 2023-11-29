@@ -27,9 +27,6 @@ import javax.validation.constraints.NotNull;
 
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.vaadin.easybinder.data.BasicBinder;
-import org.vaadin.easybinder.data.BinderStatusChangeListener;
-import org.vaadin.easybinder.data.BasicBinder.EasyBinding;
 import org.vaadin.easybinder.data.converters.NullConverter;
 import org.vaadin.easybinder.data.converters.StringLengthConverterValidator;
 import org.vaadin.easybinder.usagetest.BasicBinderGroupingTest.MyEntity2;

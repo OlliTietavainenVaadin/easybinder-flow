@@ -27,20 +27,12 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import com.vaadin.flow.data.binder.Result;
+import com.vaadin.flow.data.converter.*;
 import org.vaadin.easybinder.data.converters.NullConverter;
 import org.vaadin.easybinder.data.converters.StringLengthConverterValidator;
 
-import com.vaadin.data.Converter;
-import com.vaadin.data.Result;
-import com.vaadin.data.converter.LocalDateTimeToDateConverter;
-import com.vaadin.data.converter.LocalDateToDateConverter;
-import com.vaadin.data.converter.StringToBigDecimalConverter;
-import com.vaadin.data.converter.StringToBigIntegerConverter;
-import com.vaadin.data.converter.StringToBooleanConverter;
-import com.vaadin.data.converter.StringToDoubleConverter;
-import com.vaadin.data.converter.StringToFloatConverter;
-import com.vaadin.data.converter.StringToIntegerConverter;
-import com.vaadin.data.converter.StringToLongConverter;
+
 
 public class ConverterRegistry {
 	static ConverterRegistry instance;

@@ -20,7 +20,6 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 import org.junit.Test;
-import org.vaadin.easybinder.data.BasicBinder.EasyBinding;
 import org.vaadin.easybinder.ui.EComboBox;
 import org.vaadin.easybinder.ui.EGTypeComponentAdapter;
 
