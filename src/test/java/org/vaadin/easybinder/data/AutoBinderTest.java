@@ -4,12 +4,12 @@ import com.vaadin.flow.component.AbstractField;
 import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.data.binder.PropertyId;
+import jakarta.validation.constraints.Min;
 import net.avh4.test.junit.Nested;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import javax.validation.constraints.Min;
 import java.util.Arrays;
 import java.util.HashSet;
 

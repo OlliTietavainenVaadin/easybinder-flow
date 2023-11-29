@@ -8,12 +8,12 @@ import com.vaadin.flow.data.binder.RequiredFieldConfigurator;
 import com.vaadin.flow.data.binder.Result;
 import com.vaadin.flow.data.converter.Converter;
 import com.vaadin.flow.data.converter.StringToIntegerConverter;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import org.junit.Test;
 import org.vaadin.easybinder.data.BasicBinder.EasyBinding;
 import org.vaadin.easybinder.ui.EComboBox;
 
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 import java.lang.reflect.Field;
 import java.util.EnumSet;
 import java.util.Optional;

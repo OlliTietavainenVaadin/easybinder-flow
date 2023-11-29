@@ -14,8 +14,8 @@ import org.junit.Test;
 import org.vaadin.easybinder.testentity.Flight;
 import org.vaadin.easybinder.testentity.FlightValid;
 import org.vaadin.easybinder.testentity.FlightValidator;
+import jakarta.validation.constraints.Min;
 
-import javax.validation.constraints.Min;
 import java.time.ZoneId;
 import java.util.stream.Stream;
 

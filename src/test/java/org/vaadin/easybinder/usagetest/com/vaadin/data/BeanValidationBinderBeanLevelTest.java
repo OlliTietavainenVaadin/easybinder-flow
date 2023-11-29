@@ -4,9 +4,9 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.Binder;
+import jakarta.validation.*;
 import org.junit.Test;
 
-import javax.validation.*;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 

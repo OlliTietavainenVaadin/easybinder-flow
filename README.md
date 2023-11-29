@@ -1,3 +1,9 @@
+# EasyBinder-Flow
+
+EasyBinder-Flow is a mostly API-compatible Vaadin 24.2+ fork of the Vaadin 8 [EasyBinder add-on](https://github.com/ljessendk/easybinder/).
+
+Jakarta Validation 3 is also taken into use.
+
 # EasyBinder
 
 EasyBinder is an alternative field binder for Vaadin 8 that tries to reduce boiler plate code by automating the binding process and relying on javax.validation (JSR 303) for validation.

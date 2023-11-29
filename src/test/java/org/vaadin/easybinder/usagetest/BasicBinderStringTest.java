@@ -1,10 +1,9 @@
 package org.vaadin.easybinder.usagetest;
 
 import com.vaadin.flow.component.textfield.TextField;
+import jakarta.validation.constraints.Size;
 import org.junit.Test;
 import org.vaadin.easybinder.data.BasicBinder;
-
-import javax.validation.constraints.Size;
 
 import static org.junit.Assert.*;
 

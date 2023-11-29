@@ -18,27 +18,20 @@
  */
 package org.vaadin.easybinder.data;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.BiFunction;
-import java.util.logging.Level;
-
 import com.googlecode.gentyref.GenericTypeReflector;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.data.binder.PropertyDefinition;
 import com.vaadin.flow.data.binder.PropertyId;
 import com.vaadin.flow.internal.ReflectTools;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
+import java.lang.reflect.Type;
+import java.util.*;
+import java.util.function.BiFunction;
+import java.util.logging.Level;
 
 
 public class AutoBinder<BEAN> extends ReflectionBinder<BEAN> {
@@ -306,4 +299,3 @@ public class AutoBinder<BEAN> extends ReflectionBinder<BEAN> {
     }
 
 }
-

@@ -26,10 +26,9 @@ import com.vaadin.flow.data.provider.HasDataView;
 import com.vaadin.flow.function.SerializablePredicate;
 import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.internal.ReflectTools;
+import jakarta.validation.constraints.Min;
 import org.vaadin.easybinder.data.converters.NullConverter;
 import org.vaadin.easybinder.data.converters.NullConverterPrimitiveTarget;
-
-import javax.validation.constraints.Min;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
@@ -200,7 +199,7 @@ public class ReflectionBinder<BEAN> extends BasicBinder<BEAN> implements HasGene
 
         // Try to find the field type using reflection. This will work for any fields
         // except fields with generic types.
-        Type valueType = GenericTypeReflector.getTypeParameter(field.getClass(), HasValue.class.getTypeParameters()[0]);
+        Type valueType = GenericTypeReflector.getTypeParameter(field.getClass(), HasValue.class.getTypeParameters()[1]);
         if (valueType != null) {
             if (valueType instanceof ParameterizedType) {
                 ParameterizedType pType = (ParameterizedType) valueType;

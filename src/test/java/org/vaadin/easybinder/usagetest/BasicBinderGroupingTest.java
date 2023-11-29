@@ -2,13 +2,13 @@ package org.vaadin.easybinder.usagetest;
 
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.textfield.TextField;
+import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.group.GroupSequenceProvider;
 import org.hibernate.validator.spi.group.DefaultGroupSequenceProvider;
 import org.junit.Test;
 import org.vaadin.easybinder.data.BasicBinder;
 import org.vaadin.easybinder.data.BinderStatusChangeListener;
 
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -1,28 +1,21 @@
 package org.vaadin.easybinder.data;
 
-import static info.solidsoft.mockito.java8.AssertionMatcher.assertArg;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.atLeast;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.Arrays;
-import java.util.Date;
-
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.StatusChangeListener;
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.data.converter.StringToIntegerConverter;
 import org.junit.Test;
-import org.vaadin.easybinder.data.AutoBinder;
 import org.vaadin.easybinder.data.BasicBinder.EasyBinding;
-import org.vaadin.easybinder.data.BinderAdapter;
 import org.vaadin.easybinder.testentity.Flight;
 import org.vaadin.easybinder.testentity.FlightId;
 import org.vaadin.easybinder.testentity.FlightId.LegType;
+
+import java.util.Arrays;
+import java.util.Date;
+
+import static info.solidsoft.mockito.java8.AssertionMatcher.assertArg;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 public class BinderAdapterTest {
 
@@ -39,6 +32,7 @@ public class BinderAdapterTest {
 	public void testReadWriteBean() throws ValidationException {
 		AutoBinder<Flight> binder = new AutoBinder<>(Flight.class);
 		BinderAdapter<Flight> adapter = new BinderAdapter<>(binder, Flight.class);
+
 
 		binder.buildAndBind("flightId");
 

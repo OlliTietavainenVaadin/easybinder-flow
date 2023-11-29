@@ -12,14 +12,13 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Optional;
 
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.provider.Query;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import org.junit.Test;
 
 public class ComponentFactoryRegistryTest {

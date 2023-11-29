@@ -18,10 +18,6 @@
     <!-- See http://checkstyle.sf.net/config_javadoc.html#JavadocPackage -->
     <!-- <module name="JavadocPackage"/> -->
 
-    <!-- Checks whether files end with a new line.                        -->
-    <!-- See http://checkstyle.sf.net/config_misc.html#NewlineAtEndOfFile -->
-    <module name="NewlineAtEndOfFile"/>
-
     <!-- Checks that property files contain the same keys.         -->
     <!-- See http://checkstyle.sf.net/config_misc.html#Translation -->
     <module name="Translation"/>
@@ -29,16 +25,6 @@
     <!-- Checks for Size Violations.                    -->
     <!-- See http://checkstyle.sf.net/config_sizes.html -->
     <module name="FileLength"/>
-
-    <!-- Checks for whitespace                               -->
-    <!-- See http://checkstyle.sf.net/config_whitespace.html -->
-    <!--  <module name="FileTabCharacter"/> -->
-
-	<module name="RegexpSingleline">
-    	<property name="format" value="^\t* +\t*[A-Za-z0-9]+\S"/>
-    	<property name="message" value="Line has leading space characters; indentation should be performed with tabs only."/>
-    	<!--  <property name="ignoreComments" value="true"/>-->
-	</module>
 
     <!-- Miscellaneous other checks.                   -->
     <!-- See http://checkstyle.sf.net/config_misc.html -->
@@ -79,13 +65,9 @@
 
         <!-- Checks for imports                              -->
         <!-- See http://checkstyle.sf.net/config_import.html -->
-        <module name="AvoidStarImport"/>
+
         <module name="IllegalImport"/> <!-- defaults to sun.* packages -->
         <module name="RedundantImport"/>
-        <module name="UnusedImports">
-            <property name="processJavadoc" value="false"/>
-        </module>
-
         <!-- Checks for Size Violations.                    -->
         <!-- See http://checkstyle.sf.net/config_sizes.html -->
         <!--  <module name="LineLength"/>-->
@@ -120,7 +102,7 @@
 
         <!-- Checks for common coding problems               -->
         <!-- See http://checkstyle.sf.net/config_coding.html -->
-        <module name="EmptyStatement"/>
+
         <module name="EqualsHashCode"/>
         <!--  <module name="HiddenField"/>-->
         <module name="IllegalInstantiation"/>

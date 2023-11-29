@@ -15,13 +15,13 @@ import com.vaadin.flow.data.binder.Result;
 import com.vaadin.flow.data.converter.Converter;
 import com.vaadin.flow.data.converter.LocalDateTimeToDateConverter;
 import com.vaadin.flow.data.converter.LocalDateToDateConverter;
+import jakarta.validation.constraints.Min;
 import org.vaadin.addonhelpers.AbstractTest;
 import org.vaadin.easybinder.testentity.Flight;
 import org.vaadin.easybinder.testentity.FlightId.LegType;
 import org.vaadin.easybinder.testentity.FlightValid;
 import org.vaadin.easybinder.testentity.FlightValidator;
 
-import javax.validation.constraints.Min;
 import java.time.ZoneId;
 import java.util.EnumSet;
 

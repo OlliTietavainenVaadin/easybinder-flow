@@ -1,9 +1,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.vaadin</groupId>
-	<artifactId>easybinder</artifactId>
+	<artifactId>easybinder-flow</artifactId>
 	<version>1.0.0</version>
-	<name>easybinder</name>
+	<name>easybinder-flow</name>
 	<packaging>bundle</packaging>
 	<organization>
 		<name>Vaadin Community</name>
@@ -19,8 +19,8 @@
 		<Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
 		<Vaadin-License-Title>Apache License 2.0</Vaadin-License-Title>
 		<Vaadin-Addon>${project.artifactId}-${project.version}.jar</Vaadin-Addon>
-		<github.account>ljessendk</github.account>
-		<github.project>easybinder</github.project>
+		<github.account>OlliTietavainenVaadin</github.account>
+		<github.project>easybinder-flow</github.project>
 	</properties>
 	<scm>
 		<url>https://github.com/${github.account}/${github.project}</url>
@@ -46,22 +46,21 @@
 			<version>${vaadin.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>javax.validation</groupId>
-			<artifactId>validation-api</artifactId>
-			<version>2.0.1.Final</version>
-			<scope>provided</scope>
+			<groupId>jakarta.validation</groupId>
+			<artifactId>jakarta.validation-api</artifactId>
+			<version>3.0.2</version>
 		</dependency>
 		<dependency>
-			<groupId>javax.persistence</groupId>
-			<artifactId>persistence-api</artifactId>
-			<version>1.0.2</version>
+			<groupId>jakarta.persistence</groupId>
+			<artifactId>jakarta.persistence-api</artifactId>
+			<version>3.1.0</version>
 			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>org.hibernate.validator</groupId>
 			<artifactId>hibernate-validator</artifactId>
-			<version>6.0.16.Final</version>
+			<version>8.0.1.Final</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -90,12 +89,23 @@
 			<version>2.5.0</version>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>jakarta.platform</groupId>
+			<artifactId>jakarta.jakartaee-web-api</artifactId>
+			<version>3.0.2</version>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 	<repositories>
+		<repository>
+			<id>central</id>
+			<url>https://repo.maven.apache.org/maven2/</url>
+		</repository>
 		<repository>
 			<id>vaadin-addons</id>
 			<url>https://maven.vaadin.com/vaadin-addons</url>
 		</repository>
+
 	</repositories>
 
 	<build>
@@ -105,8 +115,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.8.0</version>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
+					<source>17</source>
+					<target>17</target>
 					<!-- <release>11</release> -->
 				</configuration>
 			</plugin>
@@ -257,31 +267,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-				<groupId>com.github.spotbugs</groupId>
-				<artifactId>spotbugs-maven-plugin</artifactId>
-				<version>3.1.11</version>
-				<dependencies>
-					<dependency>
-						<groupId>com.github.spotbugs</groupId>
-						<artifactId>spotbugs</artifactId>
-						<version>3.1.12</version>
-					</dependency>
-				</dependencies>
-				<executions>
-					<execution>
-						<id>validate</id>
-						<phase>validate</phase>
-						<goals>
-							<goal>check</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<excludeFilterFile>spotbugs-exclude.xml</excludeFilterFile>
-					<!-- <includeFilterFile>spotbugs-include.xml</includeFilterFile> -->
-				</configuration>
-			</plugin>
+
 		</plugins>
 		<pluginManagement>
 			<plugins>
@@ -294,25 +280,6 @@
 					<configuration>
 						<lifecycleMappingMetadata>
 							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>
-											com.github.spotbugs
-										</groupId>
-										<artifactId>
-											spotbugs-maven-plugin
-										</artifactId>
-										<versionRange>
-											[3.1.0-RC6,)
-										</versionRange>
-										<goals>
-											<goal>check</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore />
-									</action>
-								</pluginExecution>
 								<pluginExecution>
 									<!-- Crashes under eclipse -->
 									<pluginExecutionFilter>

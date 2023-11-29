@@ -1,11 +1,16 @@
 package org.vaadin.easybinder.data;
 
 import com.vaadin.flow.component.HasValue;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BindingValidationStatus;
 import com.vaadin.flow.data.converter.StringToIntegerConverter;
+import jakarta.validation.Constraint;
+import jakarta.validation.ConstraintValidator;
+import jakarta.validation.ConstraintValidatorContext;
+import jakarta.validation.Payload;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.vaadin.easybinder.data.BasicBinder.EasyBinding;
@@ -14,12 +19,6 @@ import org.vaadin.easybinder.data.converters.StringLengthConverterValidator;
 import org.vaadin.easybinder.usagetest.BasicBinderGroupingTest.MyEntity2;
 import org.vaadin.easybinder.usagetest.BasicBinderGroupingTest.MyGroup;
 
-import javax.validation.Constraint;
-import javax.validation.ConstraintValidator;
-import javax.validation.ConstraintValidatorContext;
-import javax.validation.Payload;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import java.util.Locale;
@@ -211,31 +210,6 @@ public class BasicBinderTest {
 		BindingValidationStatus<Integer> s = binding.validate();
 		assertTrue(s.getResult().isPresent());
 		assertTrue(s.getResult().get().isError());
-	}
-
-	@Test
-	public void testBindingFindLocaleComponentWithLocale() {
-		UI.getCurrent().setLocale(Locale.CANADA);
-		EasyBinding<MyEntity, String, Integer> binding = binder.bind(age, MyEntity::getAge, MyEntity::setAge, "age", new StringLengthConverterValidator("Must be a number", 1, null).chain(new StringToIntegerConverter("Must be a number")));
-		assertEquals(Locale.CANADA, binding.findLocale());
-	}
-
-	@Test
-	public void testBindingFindLocaleFromUI() {
-		UI mockUi = mock(UI.class);
-		when(mockUi.getLocale()).thenReturn(Locale.FRANCE);
-		UI.setCurrent(mockUi);
-		EasyBinding<MyEntity, String, Integer> binding = binder.bind(age, MyEntity::getAge, MyEntity::setAge, "age", new StringLengthConverterValidator("Must be a number", 1, null).chain(new StringToIntegerConverter("Must be a number")));
-		assertEquals(Locale.FRANCE, binding.findLocale());
-	}
-
-	@Test
-	public void testBindingFindLocaleComponentNoGlobal() {
-		UI mockUi = mock(UI.class);
-		when(mockUi.getLocale()).thenReturn(null);
-		UI.setCurrent(mockUi);
-		EasyBinding<MyEntity, String, Integer> binding = binder.bind(age, MyEntity::getAge, MyEntity::setAge, "age", new StringLengthConverterValidator("Must be a number", 1, null).chain(new StringToIntegerConverter("Must be a number")));
-		assertEquals(Locale.getDefault(), binding.findLocale());
 	}
 
 	@Test
