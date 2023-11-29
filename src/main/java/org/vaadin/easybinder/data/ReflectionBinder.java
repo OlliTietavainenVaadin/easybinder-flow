@@ -175,7 +175,7 @@ public class ReflectionBinder<BEAN> extends BasicBinder<BEAN> implements HasGene
                 try {
                     Object cast = propertyTypeNonPrimitive.cast(value);
                 } catch (Exception e) {
-                    return Result.error(e.getMessage());
+                    throw new RuntimeException(e.getMessage());
                 }
                 return Result.ok(value);
             }
@@ -232,9 +232,12 @@ public class ReflectionBinder<BEAN> extends BasicBinder<BEAN> implements HasGene
         // If the field has items we can fetch the type from the first item
         if (field instanceof HasDataView) {
             HasDataView<PRESENTATION, ?, ?> hasDataView = (HasDataView<PRESENTATION, ?, ?>) field;
-            PRESENTATION item = hasDataView.getGenericDataView().getItem(0);
-            return Optional.of((Class<PRESENTATION>) item.getClass());
-
+            try {
+                PRESENTATION item = hasDataView.getGenericDataView().getItem(0);
+                return Optional.of((Class<PRESENTATION>) item.getClass());
+            } catch (IndexOutOfBoundsException ioobe) {
+                return Optional.empty();
+            }
         }
 
         return Optional.empty();

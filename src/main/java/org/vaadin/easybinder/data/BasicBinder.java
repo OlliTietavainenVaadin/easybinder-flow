@@ -27,7 +27,6 @@ import com.vaadin.flow.function.ValueProvider;
 import com.vaadin.flow.shared.Registration;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
-import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 
 import java.util.*;
