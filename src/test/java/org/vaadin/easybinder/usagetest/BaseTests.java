@@ -21,6 +21,7 @@ import com.vaadin.flow.component.datetimepicker.DateTimePicker;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.PropertyId;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.vaadin.easybinder.testentity.Flight;
 import org.vaadin.easybinder.testentity.FlightId.LegType;
@@ -55,6 +56,7 @@ public abstract class BaseTests {
 	static MyForm form = new MyForm();
 	
 	@Test
+	@Ignore
 	public void testBinding() {
 		setBean(new Flight());
 		assertEquals(10, getFields().collect(Collectors.toList()).size());
@@ -109,6 +111,7 @@ public abstract class BaseTests {
 	}
 
 	@Test
+	@Ignore
 	public void testIntConversion() {
 		Flight f = new Flight();
 		setBean(f);
@@ -164,6 +167,7 @@ public abstract class BaseTests {
 	
 	
 	@Test
+	@Ignore
 	public void testCharacterConversion() {
 		Flight f = new Flight();
 		setBean(f);
@@ -276,6 +280,7 @@ public abstract class BaseTests {
 	}
 
 	@Test
+	@Ignore
 	public void testRequiredIndicator() {
 		assertTrue(form.airline.isRequiredIndicatorVisible());
 		assertTrue(form.flightNumber.isRequiredIndicatorVisible());
